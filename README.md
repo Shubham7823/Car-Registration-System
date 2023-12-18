@@ -1,1 +1,6 @@
-# Car-Registration-System
+The project is a car registration system that allows users to register their cars online, store and manage their car information, and access various services related to their cars. It is developed using GoFr and GoLang, two powerful technologies for building web applications and APIs.The project follows a layered architecture approach, which separates different aspects of the application into distinct layers. This approach enhances code maintainability, testing, and scalability. The layers of the project are:
+
+1. Handler: This layer focuses on request handling, the handler layer has a dependency on the service layer.
+2. Service: This layer contains the business logic of the application. It coordinates interactions between the store layer and other service layers. It has dependencies on the store layer and different service layers.
+3. Store: This layer represents the data access layer, responsible for handling interactions with datastores (databases, caches, etc.). The store layer abstracts the details of data access and provides a clean interface for the service layer to interact with the underlying data.
+4. Model: This layer serves as a container for various data structures defined within the project, each accompanied by the methods associated with them
