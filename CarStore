@@ -1,0 +1,46 @@
+package store
+
+import (
+	"github.com/gofr-org/gofr"
+	"github.com/gofr-org/gofr/model"
+	"gorm.io/gorm"
+)
+
+// carStore is the implementation of the car store interface
+type carStore struct {
+	db *gorm.DB // database instance
+}
+
+// NewCarStore returns a new car store instance
+func NewCarStore() model.CarStore {
+	return &carStore{gofr.DB.Instance()}
+}
+
+// CreateCar creates a new car in the database
+func (s *carStore) CreateCar(car *model.Car) error {
+	return s.db.Create(car).Error
+}
+
+// GetCarByID gets a car by ID from the database
+func (s *carStore) GetCarByID(id uint) (*model.Car, error) {
+	var car model.Car
+	err := s.db.First(&car, id).Error
+	return &car, err
+}
+
+// GetAllCars gets all cars from the database
+func (s *carStore) GetAllCars() ([]*model.Car, error) {
+	var cars []*model.Car
+	err := s.db.Find(&cars).Error
+	return cars, err
+}
+
+// UpdateCar updates a car in the database
+func (s *carStore) UpdateCar(car *model.Car) error {
+	return s.db.Save(car).Error
+}
+
+// DeleteCar deletes a car from the database
+func (s *carStore) DeleteCar(id uint) error {
+	return s.db.Delete(&model.Car{}, id).Error
+}
