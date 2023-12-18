@@ -1,0 +1,40 @@
+package model
+
+import (
+	"github.com/gofr-org/gofr"
+	"gorm.io/gorm"
+)
+
+// Car is the model for a car
+type Car struct {
+	gorm.Model // embeds common fields
+	Make       string `json:"make"`       // car make
+	Model      string `json:"model"`      // car model
+	Year       int    `json:"year"`       // car year
+	Color      string `json:"color"`      // car color
+	Owner      string `json:"owner"`      // car owner
+}
+
+// CarStore is the interface for the car store
+type CarStore interface {
+	CreateCar(car *Car) error    // create a new car
+	GetCarByID(id uint) (*Car, error) // get a car by ID
+	GetAllCars() ([]*Car, error) // get all cars
+	UpdateCar(car *Car) error    // update a car
+	DeleteCar(id uint) error     // delete a car
+}
+
+// CarService is the interface for the car service
+type CarService interface {
+	CarStore // embeds the car store interface
+}
+
+// carService is the implementation of the car service interface
+type carService struct {
+	CarStore // embeds the car store interface
+}
+
+// NewCarService returns a new car service instance
+func NewCarService(store CarStore) CarService {
+	return &carService{store}
+}
