@@ -1,0 +1,136 @@
+package handler
+
+import (
+	"github.com/gofr-org/gofr"
+	"github.com/gofr-org/gofr/model"
+	"github.com/gofr-org/gofr/store"
+	"strconv"
+)
+
+// CarHandler is the handler for the car routes
+type CarHandler struct {
+	service model.CarService // car service instance
+}
+
+// NewCarHandler returns a new car handler instance
+func NewCarHandler() *CarHandler {
+	return &CarHandler{service: model.NewCarService(store.NewCarStore())}
+}
+
+// RegisterRoutes registers the car routes
+func (h *CarHandler) RegisterRoutes(router *gofr.Router) {
+	// Register a POST route for creating a new car
+	router.POST("/cars", h.CreateCar)
+
+	// Register a GET route for getting a car by ID
+	router.GET("/cars/:id", h.GetCarByID)
+
+	// Register a GET route for getting all cars
+	router.GET("/cars", h.GetAllCars)
+
+	// Register a PUT route for updating a car
+	router.PUT("/cars/:id", h.UpdateCar)
+
+	// Register a DELETE route for deleting a car
+	router.DELETE("/cars/:id", h.DeleteCar)
+}
+
+// CreateCar handles the request for creating a new car
+func (h *CarHandler) CreateCar(ctx *gofr.Context) {
+	// Bind the request body to a car model
+	var car model.Car
+	if err := ctx.Bind(&car); err != nil {
+		gofr.Error(ctx, err) // handle the error
+		return
+	}
+
+	// Call the service layer to create the car
+	if err := h.service.CreateCar(&car); err != nil {
+		gofr.Error(ctx, err) // handle the error
+		return
+	}
+
+	// Send a JSON response with the created car
+	gofr.JSON(ctx, 201, car)
+}
+
+// GetCarByID handles the request for getting a car by ID
+func (h *CarHandler) GetCarByID(ctx *gofr.Context) {
+	// Get the car ID from the route parameter
+	id, err := strconv.Atoi(ctx.Param("id"))
+	if err != nil {
+		gofr.Error(ctx, err) // handle the error
+		return
+	}
+
+	// Call the service layer to get the car by ID
+	car, err := h.service.GetCarByID(uint(id))
+	if err != nil {
+		gofr.Error(ctx, err) // handle the error
+		return
+	}
+
+	// Send a JSON response with the car
+	gofr.JSON(ctx, 200, car)
+}
+
+// GetAllCars handles the request for getting all cars
+func (h *CarHandler) GetAllCars(ctx *gofr.Context) {
+	// Call the service layer to get all cars
+	cars, err := h.service.GetAllCars()
+	if err != nil {
+		gofr.Error(ctx, err) // handle the error
+		return
+	}
+
+	// Send a JSON response with the cars
+	gofr.JSON(ctx, 200, cars)
+}
+
+// UpdateCar handles the request for updating a car
+func (h *CarHandler) UpdateCar(ctx *gofr.Context) {
+	// Get the car ID from the route parameter
+	id, err := strconv.Atoi(ctx.Param("id"))
+	if err != nil {
+		gofr.Error(ctx, err) // handle the error
+		return
+	}
+
+	// Bind the request body to a car model
+	var car model.Car
+	if err := ctx.Bind(&car); err != nil {
+		gofr.Error(ctx, err) // handle the error
+		return
+	}
+
+	// Set the car ID to the route parameter
+	car.ID = uint(id)
+
+	// Call the service layer to update the car
+	if err := h.service.UpdateCar(&car); err != nil {
+		gofr.Error(ctx, err) // handle the error
+		return
+	}
+
+	// Send a JSON response with the updated car
+	gofr.JSON(ctx, 200, car)
+}
+
+// DeleteCar handles the request for deleting a car
+func (h *CarHandler) DeleteCar(ctx *gofr.Context) {
+	// Get the car ID from the route parameter
+	id, err := strconv.Atoi(ctx.Param("id"))
+	if err != nil {
+		gofr.Error(ctx, err) // handle the error
+		return
+	}
+
+	// Call the service layer to delete the car
+	if err := h.service.DeleteCar(uint(id)); err != nil {
+		gofr.Error(ctx, err) // handle the error
+		return
+	}
+
+	// Send a JSON response with a success message
+	gofr.JSON(ctx, 200, map[string]string{"message": "Car deleted successfully"})
+}
