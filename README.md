@@ -3,4 +3,4 @@ The project is a car registration system that allows users to register their car
 1. Handler: This layer focuses on request handling, the handler layer has a dependency on the service layer.
 2. Service: This layer contains the business logic of the application. It coordinates interactions between the store layer and other service layers. It has dependencies on the store layer and different service layers.
 3. Store: This layer represents the data access layer, responsible for handling interactions with datastores (databases, caches, etc.). The store layer abstracts the details of data access and provides a clean interface for the service layer to interact with the underlying data.
-4. Model: This layer serves as a container for various data structures defined within the project, each accompanied by the methods associated with them
+4. Model: This layer serves as a container for various data structures defined within the project, each accompanied by the methods associated with them.
